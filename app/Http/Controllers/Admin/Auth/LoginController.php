@@ -10,10 +10,18 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 
+/**
+ * Class LoginController
+ *
+ * @package App\Http\Controllers\Admin\Auth
+ */
 class LoginController extends Controller
 {
     use AuthenticatesUsers;
 
+    /**
+     * @var string
+     */
     protected $redirectTo = '/admin';
 
     /**
@@ -23,10 +31,19 @@ class LoginController extends Controller
         $this->middleware('guest:admin')->except('logout');
     }
 
+    /**
+     * @return View
+     */
     public function showLoginForm(): View {
         return view('admin.auth.login');
     }
 
+    /**
+     * @param Request $request
+     *
+     * @return \Illuminate\Http\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     * @throws \Illuminate\Validation\ValidationException
+     */
     public function login(Request $request) {
         $this->validate($request, [
             $this->username() => 'required|string',
@@ -46,6 +63,11 @@ class LoginController extends Controller
         return $this->sendFailedLoginResponse($request);
     }
 
+    /**
+     * @param Request $request
+     *
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     */
     public function logout(Request $request) {
         Auth::guard('admin')->logout();
 

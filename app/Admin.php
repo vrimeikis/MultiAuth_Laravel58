@@ -5,6 +5,7 @@ declare(strict_types = 1);
 namespace App;
 
 use App\Notifications\ResetPasswordNotification;
+use App\Traits\RoleTrait;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -15,7 +16,7 @@ use Illuminate\Notifications\Notifiable;
  */
 class Admin extends Authenticatable
 {
-    use Notifiable;
+    use Notifiable, RoleTrait;
 
     /**
      * @var array
@@ -34,6 +35,9 @@ class Admin extends Authenticatable
         'remember_token',
     ];
 
+    /**
+     * @param string $token
+     */
     public function sendPasswordResetNotification($token) {
         $this->notify(new ResetPasswordNotification($token));
     }
