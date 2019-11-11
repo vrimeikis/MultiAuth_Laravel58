@@ -11,6 +11,7 @@
 |
 */
 
+use App\Http\Middleware\RouteAccessMiddleware;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -43,22 +44,24 @@ Route::prefix('admin')->name('admin.')->namespace('Admin')->group(function() {
     Route::middleware('auth:admin')->group(function() {
         Route::get('/', 'HomeController@index')->name('home');
 
-        Route::prefix('administrator')->name('administrator.')->group(function() {
-            Route::get('/', 'AdminController@index')
-                ->name('index');
-            Route::get('{admin}/edit', 'AdminController@edit')
-                ->name('edit');
-            Route::put('{admin}', 'AdminController@update')
-                ->name('update');
-        });
+        Route::middleware(RouteAccessMiddleware::ALIAS)->group(function() {
+            Route::prefix('administrator')->name('administrator.')->group(function() {
+                Route::get('/', 'AdminController@index')
+                    ->name('index');
+                Route::get('{admin}/edit', 'AdminController@edit')
+                    ->name('edit');
+                Route::put('{admin}', 'AdminController@update')
+                    ->name('update');
+            });
 
-        Route::prefix('role')->name('role.')->group(function() {
-            Route::get('/', 'RoleController@index')
-                ->name('index');
-            Route::get('{role}/edit', 'RoleController@edit')
-                ->name('edit');
-            Route::put('{role}', 'RoleController@update')
-                ->name('update');
+            Route::prefix('role')->name('role.')->group(function() {
+                Route::get('/', 'RoleController@index')
+                    ->name('index');
+                Route::get('{role}/edit', 'RoleController@edit')
+                    ->name('edit');
+                Route::put('{role}', 'RoleController@update')
+                    ->name('update');
+            });
         });
     });
 });

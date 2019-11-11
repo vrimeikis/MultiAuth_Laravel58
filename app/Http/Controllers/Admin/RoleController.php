@@ -5,6 +5,7 @@ declare(strict_types = 1);
 namespace App\Http\Controllers\Admin;
 
 use App\Role;
+use App\Services\RouteAccessManagerService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Route as RoutingRoute;
@@ -15,6 +16,20 @@ use Illuminate\View\View;
 
 class RoleController extends Controller
 {
+    /**
+     * @var RouteAccessManagerService
+     */
+    private $routeAccessManagerService;
+
+    /**
+     * RoleController constructor.
+     *
+     * @param RouteAccessManagerService $routeAccessManagerService
+     */
+    public function __construct(RouteAccessManagerService $routeAccessManagerService) {
+        $this->routeAccessManagerService = $routeAccessManagerService;
+    }
+
     public function index(): View {
         $roles = Role::query()->paginate();
 
@@ -24,13 +39,7 @@ class RoleController extends Controller
     }
 
     public function edit(Role $role): View {
-        $routes = collect(Route::getRoutes());
-
-        $filteredRoutes = $routes->filter(function(RoutingRoute $route) {
-            return in_array('auth:admin', $route->gatherMiddleware());
-        })->map(function(RoutingRoute $route) {
-            return $route->getName();
-        })->toArray();
+        $filteredRoutes = $this->routeAccessManagerService->getManagementRoutes();
 
         return view('admin.role.edit', [
             'role' => $role,

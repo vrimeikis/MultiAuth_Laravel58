@@ -5,6 +5,7 @@ declare(strict_types = 1);
 namespace App\Http\Controllers\Admin;
 
 use App\Admin;
+use App\Role;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -34,8 +35,11 @@ class AdminController extends Controller
      * @return View
      */
     public function edit(Admin $admin): View {
+        $roles = Role::all();
+
         return view('admin.administrator.edit', [
             'admin' => $admin,
+            'roles' => $roles,
         ]);
     }
 
@@ -53,6 +57,8 @@ class AdminController extends Controller
 
         $admin->name = $request->input('name');
         $admin->save();
+
+        $admin->roles()->sync($request->input('roles', []));
 
         return redirect()->route('admin.administrator.index')
             ->with('status', 'Update Success');

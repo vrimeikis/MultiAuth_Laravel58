@@ -17,6 +17,23 @@
                             </div>
 
                             <div class="form-group">
+                                <label>{{ __('Roles') }}</label>
+
+                                @foreach($roles as $role)
+                                    <div class="custom-control custom-checkbox">
+                                        <input id="routing_{{ $role->id }}" type="checkbox"
+                                               name="roles[]" class="custom-control-input"
+                                               value="{{ $role->id }}"
+                                               @if (in_array($role->id, $admin->roles()->pluck('id')->toArray())) checked @endif
+                                        >
+                                        <label class="custom-control-label"
+                                               for="routing_{{ $role->id }}">{{ $role->name }}</label>
+                                    </div>
+                                @endforeach
+
+                            </div>
+
+                            <div class="form-group">
                                 <input type="submit" class="btn btn-sm btn-outline-primary">
                             </div>
                         </form>
