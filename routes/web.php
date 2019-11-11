@@ -51,6 +51,15 @@ Route::prefix('admin')->name('admin.')->namespace('Admin')->group(function() {
             Route::put('{admin}', 'AdminController@update')
                 ->name('update');
         });
+
+        Route::prefix('role')->name('role.')->group(function() {
+            Route::get('/', 'RoleController@index')
+                ->name('index');
+            Route::get('{role}/edit', 'RoleController@edit')
+                ->name('edit');
+            Route::put('{role}', 'RoleController@update')
+                ->name('update');
+        });
     });
 });
 
