@@ -7,7 +7,9 @@ namespace App\Http\Controllers\Admin;
 use App\Role;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Route as RoutingRoute;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 
@@ -22,8 +24,17 @@ class RoleController extends Controller
     }
 
     public function edit(Role $role): View {
+        $routes = collect(Route::getRoutes());
+
+        $filteredRoutes = $routes->filter(function(RoutingRoute $route) {
+            return in_array('auth:admin', $route->gatherMiddleware());
+        })->map(function(RoutingRoute $route) {
+            return $route->getName();
+        })->toArray();
+
         return view('admin.role.edit', [
             'role' => $role,
+            'routes' => $filteredRoutes,
         ]);
     }
 
@@ -42,7 +53,7 @@ class RoleController extends Controller
 
         $role->name = $request->input('name');
         $role->full_access = $request->input('full_access', 0);
-//        $role->accessible_routes = $request->input('accessible_routes'); todo: make it
+        $role->accessible_routes = $request->input('accessible_routes', []);
         $role->description = $request->input('description');
         $role->save();
 
