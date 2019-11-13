@@ -25,9 +25,12 @@
                                     <td>{{ $admin->name }}</td>
                                     <td>{{ $admin->email }}</td>
                                     <td>
-                                        <a href="{{ route('admin.administrator.edit', ['admin' => $admin->id]) }}" class="btn btn-sm btn-outline-success">
-                                            {{ __('Edit') }}
-                                        </a>
+                                        @if(can_access('admin.administrator.edit'))
+                                            <a href="{{ route('admin.administrator.edit', ['admin' => $admin->id]) }}"
+                                               class="btn btn-sm btn-outline-success">
+                                                {{ __('Edit') }}
+                                            </a>
+                                        @endif
                                     </td>
                                 </tr>
                             @endforeach
